@@ -21,8 +21,10 @@ flake8-builtins = "^2.1.0"
 flake8-comprehensions = "^3.10.1"
 flake8-docstrings = "^1.7.0"
 flake8-print = "^5.0.0"
+flake8-variables-names = "^0.0.5"
 pep8-naming = "^0.15.1"
 pytest = "^9.0.3"
+ipykernel = "^6.29.2"
 
 [build-system]
 requires = ["poetry-core"]
@@ -48,6 +50,7 @@ exclude = [
     '.git',
     '.mypy_cache',
     '.venv',
+    '_tmp',
 ]
 
 [[tool.mypy.overrides]]
@@ -57,11 +60,18 @@ ignore_missing_imports = true
 
 [tool.black]
 line-length = 99
+# `_tmp/` is gitignored scratch. It cannot exist on CI, so excluding it gates nothing differently;
+# it is what lets syntax.ps1, which runs the formatters in FIX mode over `.`, be safe to run.
+force-exclude = '_tmp'
 
 [tool.isort]
 line_length = 99
 profile = "black"
 multi_line_output = 3
 lines_after_imports = 2
+default_section = "THIRDPARTY"
+known_compatibility = "six,future"
+sections = "FUTURE,COMPATIBILITY,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
 src_paths = ["src", "tests"]
 known_first_party = ["init_repo"]
+skip_glob = ["_tmp/*"]
