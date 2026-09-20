@@ -23,6 +23,8 @@ belong to whatever workspace this clone happens to sit in, not to this repo, and
   The two must not drift: a step added to one is added to the other in the same change.
 - Line length is 99 everywhere. `mypy` runs strict. Exclusions live in `.flake8` and
   `pyproject.toml`, never on a command line.
+- A test that needs an external service is marked `integration`. The gate deselects those; run
+  them by hand with `poetry run pytest -m integration`.
 
 ## Layout
 

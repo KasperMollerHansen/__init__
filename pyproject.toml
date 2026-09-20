@@ -7,6 +7,7 @@ readme = "README.md"
 packages = [
     { include = "init_repo", from = "src" },
 ]
+include = ["src/init_repo/py.typed"]
 
 [tool.poetry.dependencies]
 python = "~3.12"
@@ -14,7 +15,7 @@ python = "~3.12"
 [tool.poetry.group.dev.dependencies]
 mypy = "~1.18.2"
 black = "^24.9.0"
-isort = "^6.0.0"
+isort = "^7.0.0"
 flake8 = "^7.3.0"
 flake8-bugbear = "^23.2.13"
 flake8-builtins = "^2.1.0"
@@ -24,7 +25,10 @@ flake8-print = "^5.0.0"
 flake8-variables-names = "^0.0.5"
 pep8-naming = "^0.15.1"
 pytest = "^9.0.3"
+pytest-mock = "^3.11.1"
+pytest-cov = "^6.0.0"
 ipykernel = "^6.29.2"
+# types-* stubs for every third-party library used, added beside the library.
 
 [build-system]
 requires = ["poetry-core"]
@@ -32,7 +36,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-q --strict-markers --strict-config"
+markers = [
+    "integration: needs an external service; deselected by default, run with -m integration",
+]
+addopts = "-q --strict-markers --strict-config -m 'not integration' --cov=src --cov-report=term-missing"
 # A warning is a behaviour change announcing itself early. Ignore one narrowly, with a reason.
 filterwarnings = ["error"]
 
@@ -75,3 +82,7 @@ sections = "FUTURE,COMPATIBILITY,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
 src_paths = ["src", "tests"]
 known_first_party = ["init_repo"]
 skip_glob = ["_tmp/*"]
+
+[tool.pyright]
+# mypy is the type checker; Pylance would otherwise report a second, differing set of errors.
+typeCheckingMode = "off"
